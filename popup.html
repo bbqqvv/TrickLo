@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrickLo AI Assistant - Cấu hình</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 440px;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg,
+                    rgba(245, 248, 250, 0.95) 0%,
+                    rgba(235, 240, 245, 0.95) 50%,
+                    rgba(225, 235, 245, 0.95) 100%);
+            backdrop-filter: blur(120px) saturate(200%);
+            -webkit-backdrop-filter: blur(120px) saturate(200%);
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(120px) saturate(220%) brightness(1.15);
+            -webkit-backdrop-filter: blur(120px) saturate(220%) brightness(1.15);
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+                0 1px 2px rgba(255, 255, 255, 0.9) inset,
+                0 -1px 1px rgba(0, 0, 0, 0.02) inset;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(80px);
+            -webkit-backdrop-filter: blur(80px);
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 6px;
+            color: rgba(0, 0, 0, 0.9);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.8),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 svg {
+            width: 24px;
+            height: 24px;
+            color: rgba(0, 122, 255, 0.9);
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+        }
+
+        .header p {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.6);
+            font-weight: 500;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .content {
+            padding: 20px 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.8);
+            font-size: 14px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 14px;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(100px) saturate(180%);
+            -webkit-backdrop-filter: blur(100px) saturate(180%);
+            color: rgba(0, 0, 0, 0.9);
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+                0 1px 0 rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(0, 0, 0, 0.35);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(0, 122, 255, 0.5);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow:
+                0 0 0 4px rgba(0, 122, 255, 0.1),
+                0 4px 16px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+                0 1px 0 rgba(255, 255, 255, 0.9) inset;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.5);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .help-text a {
+            color: rgba(0, 122, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            background: rgba(0, 122, 255, 0.9);
+            backdrop-filter: blur(60px) saturate(180%);
+            -webkit-backdrop-filter: blur(60px) saturate(180%);
+            color: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(0, 122, 255, 1);
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow:
+                0 4px 16px rgba(0, 122, 255, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+                0 1px 0 rgba(255, 255, 255, 0.3) inset;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background: rgba(0, 122, 255, 1);
+            border-color: rgba(0, 122, 255, 1);
+            box-shadow:
+                0 8px 24px rgba(0, 122, 255, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+                0 1px 0 rgba(255, 255, 255, 0.4) inset;
+            transform: scale(1.02);
+        }
+
+        .btn:active {
+            background: rgba(255, 255, 255, 0.18);
+            transform: scale(0.98);
+        }
+
+        .status {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 13px;
+            animation: slideIn 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-12px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .status.success {
+            background: rgba(52, 199, 89, 0.25);
+            color: rgba(255, 255, 255, 0.95);
+            border: 0.5px solid rgba(52, 199, 89, 0.35);
+            box-shadow:
+                0 4px 12px rgba(52, 199, 89, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .status.error {
+            background: rgba(255, 59, 48, 0.25);
+            color: rgba(255, 255, 255, 0.95);
+            border: 0.5px solid rgba(255, 59, 48, 0.35);
+            box-shadow:
+                0 4px 12px rgba(255, 59, 48, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(100px) saturate(180%);
+            -webkit-backdrop-filter: blur(100px) saturate(180%);
+            padding: 16px 18px;
+            border-radius: 14px;
+            margin-top: 18px;
+            border: 1px solid rgba(0, 122, 255, 0.3);
+            border-left: 3px solid rgba(0, 122, 255, 0.8);
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+                0 1px 0 rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .instructions h3 {
+            font-size: 13px;
+            margin-bottom: 11px;
+            color: rgba(0, 0, 0, 0.85);
+            font-weight: 700;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.7);
+            line-height: 1.7;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            padding: 14px 24px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(60px);
+            -webkit-backdrop-filter: blur(60px);
+            text-align: center;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.45);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .current-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(100px) saturate(180%);
+            -webkit-backdrop-filter: blur(100px) saturate(180%);
+            border-radius: 16px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+                0 1px 0 rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .current-status .label {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.7);
+            font-weight: 600;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .current-status .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            text-shadow: 0 0 8px currentColor;
+        }
+
+        .status-indicator.configured {
+            color: rgba(52, 255, 89, 0.95);
+        }
+
+        .status-indicator.not-configured {
+            color: rgba(255, 99, 88, 0.95);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            box-shadow:
+                0 0 16px currentColor,
+                0 0 8px currentColor;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(0.95);
+            }
+        }
+
+        .configured .status-dot {
+            background: rgba(52, 255, 89, 1);
+        }
+
+        .not-configured .status-dot {
+            background: rgba(255, 99, 88, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="22"></line>
+                </svg>
+                TrickLo AI
+            </h1>
+            <p>Trợ lý AI thông minh</p>
+        </div>
+
+        <div class="content">
+            <div class="current-status">
+                <span class="label">Trạng thái:</span>
+                <span class="status-indicator" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Đang kiểm tra...</span>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="apiKey">Gemini API Key</label>
+                <input type="password" id="apiKey" placeholder="Nhập API key của bạn...">
+                <p class="help-text">
+                    Lấy API key miễn phí tại
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>
+                </p>
+            </div>
+
+            <button class="btn" id="saveBtn">Lưu cấu hình</button>
+
+            <div id="statusMessage"></div>
+
+            <div class="instructions">
+                <h3>Hướng dẫn sử dụng</h3>
+                <ol>
+                    <li>Lấy API key từ Google AI Studio</li>
+                    <li>Dán API key và nhấn "Lưu cấu hình"</li>
+                    <li>Truy cập bất kỳ trang web nào</li>
+                    <li>Bôi đen văn bản hoặc câu hỏi</li>
+                    <li>Xem kết quả hiển thị ngay trên trang</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="footer">
+            TrickLo AI v2.1.0
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

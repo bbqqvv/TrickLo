@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Icons cho Extension</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .icon-preview {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .icon-item {
+            text-align: center;
+        }
+
+        canvas {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-label {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: left;
+            border-left: 4px solid #667eea;
+        }
+
+        .info p {
+            margin: 10px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .success {
+            color: #28a745;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎨 Tạo Icons cho TrickLo AI Extension</h1>
+
+        <div class="icon-preview">
+            <div class="icon-item">
+                <canvas id="icon16" width="16" height="16"></canvas>
+                <div class="icon-label">16x16</div>
+            </div>
+            <div class="icon-item">
+                <canvas id="icon48" width="48" height="48"></canvas>
+                <div class="icon-label">48x48</div>
+            </div>
+            <div class="icon-item">
+                <canvas id="icon128" width="128" height="128"></canvas>
+                <div class="icon-label">128x128</div>
+            </div>
+        </div>
+
+        <button onclick="downloadIcons()">📥 Tải xuống tất cả Icons</button>
+
+        <div class="info">
+            <p><strong>📌 Hướng dẫn:</strong></p>
+            <p>1. Nhấn nút "Tải xuống tất cả Icons" để tải về 3 file icon</p>
+            <p>2. Di chuyển các file icon vào thư mục extension của bạn</p>
+            <p>3. Các file icon sẽ được đặt tên: icon16.png, icon48.png, icon128.png</p>
+            <p>4. Extension đã sẵn sàng để cài đặt vào Chrome!</p>
+        </div>
+
+        <div id="successMessage" class="success"></div>
+    </div>
+
+    <script>
+        // Hàm vẽ icon
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // Vẽ robot icon
+            const scale = size / 128;
+
+            // Head
+            ctx.fillStyle = 'white';
+            ctx.fillRect(35 * scale, 40 * scale, 58 * scale, 50 * scale);
+
+            // Eyes
+            ctx.fillStyle = '#667eea';
+            ctx.fillRect(45 * scale, 55 * scale, 15 * scale, 15 * scale);
+            ctx.fillRect(68 * scale, 55 * scale, 15 * scale, 15 * scale);
+
+            // Antenna
+            ctx.fillStyle = 'white';
+            ctx.fillRect(61 * scale, 30 * scale, 6 * scale, 10 * scale);
+            ctx.beginPath();
+            ctx.arc(64 * scale, 28 * scale, 5 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mouth (smile)
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3 * scale;
+            ctx.beginPath();
+            ctx.arc(64 * scale, 75 * scale, 10 * scale, 0, Math.PI);
+            ctx.stroke();
+        }
+
+        // Vẽ tất cả icons
+        drawIcon(document.getElementById('icon16'), 16);
+        drawIcon(document.getElementById('icon48'), 48);
+        drawIcon(document.getElementById('icon128'), 128);
+
+        // Hàm tải xuống icons
+        function downloadIcons() {
+            const sizes = [16, 48, 128];
+
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`icon${size}`);
+                const link = document.createElement('a');
+                link.download = `icon${size}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+
+            document.getElementById('successMessage').textContent =
+                '✅ Đã tải xuống thành công! Kiểm tra thư mục Downloads của bạn.';
+        }
+    </script>
+</body>
+
+</html>

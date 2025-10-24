@@ -1,0 +1,474 @@
+/* =========================================
+   TrickLo AI - iOS Control Center Style
+   Transparent • Frosted Glass • Vibrancy
+   =========================================*/
+
+/* Floating Icon - iOS Control Center Style */
+.tricklo-floating-icon {
+    position: absolute;
+    z-index: 2147483647;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    animation: tricklo-icon-appear 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes tricklo-icon-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tricklo-icon-inner {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    -webkit-backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 1px 0 rgba(255, 255, 255, 1) inset;
+}
+
+.tricklo-floating-icon:hover .tricklo-icon-inner {
+    background: rgba(0, 122, 255, 0.9);
+    backdrop-filter: blur(120px) saturate(220%) brightness(1.15);
+    -webkit-backdrop-filter: blur(120px) saturate(220%) brightness(1.15);
+    border-color: rgba(0, 122, 255, 1);
+    box-shadow:
+        0 12px 36px rgba(0, 122, 255, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.3) inset,
+        0 1px 0 rgba(255, 255, 255, 0.4) inset;
+    transform: scale(1.05);
+}
+
+.tricklo-icon-svg {
+    width: 24px;
+    height: 24px;
+    color: rgba(0, 122, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.tricklo-floating-icon:hover .tricklo-icon-svg {
+    color: rgba(255, 255, 255, 1);
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+}
+
+/* Floating Menu - iOS Control Center Style */
+.tricklo-floating-menu {
+    position: absolute;
+    z-index: 2147483647;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    -webkit-backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 1px 0 rgba(255, 255, 255, 1) inset;
+    padding: 10px;
+    min-width: 220px;
+    animation: tricklo-menu-appear 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes tricklo-menu-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.tricklo-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 15px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+    user-select: none;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    font-weight: 600;
+    background: transparent;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.tricklo-menu-item:hover {
+    background: rgba(0, 122, 255, 0.12);
+    backdrop-filter: blur(60px);
+    -webkit-backdrop-filter: blur(60px);
+}
+
+.tricklo-menu-item.featured {
+    background: rgba(0, 122, 255, 0.15);
+    color: rgba(0, 122, 255, 0.95);
+    font-weight: 700;
+}
+
+.tricklo-menu-item.featured:hover {
+    background: rgba(0, 122, 255, 0.9);
+    color: white;
+    box-shadow:
+        0 4px 12px rgba(0, 122, 255, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+}
+
+.tricklo-menu-divider {
+    height: 0.5px;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 8px 10px;
+}
+
+.tricklo-menu-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.tricklo-menu-text {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+}
+
+/* AI Bubble - iOS Control Center Style */
+.tricklo-ai-bubble {
+    position: absolute;
+    z-index: 2147483647;
+    max-width: 480px;
+    min-width: 400px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    -webkit-backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 1px 0 rgba(255, 255, 255, 1) inset;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    animation: tricklo-bubble-appear 0.45s cubic-bezier(0.4, 0.0, 0.2, 1);
+    overflow: hidden;
+}
+
+@keyframes tricklo-bubble-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-32px) scale(0.88);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.tricklo-ai-bubble.loading .tricklo-answer-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.tricklo-ai-bubble.loading .tricklo-answer-text::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(0, 122, 255, 0.2);
+    border-top-color: rgba(0, 122, 255, 0.9);
+    border-radius: 50%;
+    animation: tricklo-spin 0.8s linear infinite;
+}
+
+@keyframes tricklo-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.tricklo-bubble-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(80px);
+    -webkit-backdrop-filter: blur(80px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: move;
+    user-select: none;
+}
+
+.tricklo-bubble-header:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.tricklo-bubble-header:active {
+    cursor: grabbing;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.tricklo-bubble-icon-svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(0, 122, 255, 0.9);
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.tricklo-bubble-title {
+    flex: 1;
+    font-weight: 700;
+    font-size: 15px;
+    color: rgba(0, 0, 0, 0.88);
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.tricklo-bubble-close {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.6);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+    padding: 0;
+}
+
+.tricklo-bubble-close:hover {
+    background: rgba(255, 59, 48, 0.15);
+    border-color: rgba(255, 59, 48, 0.3);
+    color: rgba(255, 59, 48, 0.95);
+    transform: scale(1.05);
+}
+
+.tricklo-bubble-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.tricklo-bubble-question,
+.tricklo-bubble-answer {
+    padding: 18px 20px;
+    background: transparent;
+}
+
+/* Ẩn phần câu hỏi */
+.tricklo-bubble-question {
+    display: none;
+}
+
+.tricklo-bubble-answer strong {
+    display: block;
+    margin-bottom: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+.tricklo-answer-text {
+    padding: 13px 17px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(100px) saturate(180%);
+    -webkit-backdrop-filter: blur(100px) saturate(180%);
+    border-radius: 14px;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+    line-height: 1.65;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    max-height: 400px;
+    overflow-y: auto;
+    font-weight: 500;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.tricklo-answer-text::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tricklo-answer-text::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+}
+
+.tricklo-answer-text::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.tricklo-answer-text::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+    background-clip: padding-box;
+}
+
+.tricklo-answer-text code {
+    background: rgba(0, 122, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+    font-size: 13px;
+    color: rgba(0, 122, 255, 0.95);
+}
+
+.tricklo-answer-text strong {
+    display: inline;
+    color: rgba(0, 0, 0, 0.95);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-bottom: 0;
+}
+
+.tricklo-answer-text em {
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+/* Batch Answers - iOS Grid Style */
+.batch-answers-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.batch-answer-item {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(100px) saturate(200%);
+    -webkit-backdrop-filter: blur(100px) saturate(200%);
+    border-radius: 14px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    font-weight: 500;
+}
+
+.batch-answer-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+        0 8px 24px rgba(0, 122, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.batch-answer-item .answer-letter {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(0, 122, 255, 0.9);
+    backdrop-filter: blur(80px);
+    -webkit-backdrop-filter: blur(80px);
+    color: white;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 22px;
+    box-shadow:
+        0 4px 12px rgba(0, 122, 255, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Mini Answer Bubble - iOS Control Center Style */
+.tricklo-mini-answer {
+    position: absolute;
+    z-index: 2147483647;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    background: rgba(0, 122, 255, 0.92);
+    backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    -webkit-backdrop-filter: blur(120px) saturate(200%) brightness(1.1);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 122, 255, 1);
+    box-shadow:
+        0 12px 36px rgba(0, 122, 255, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    cursor: pointer;
+    animation: tricklo-mini-appear 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    user-select: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes tricklo-mini-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tricklo-mini-answer:hover {
+    transform: scale(1.08);
+    background: rgba(0, 122, 255, 1);
+    box-shadow:
+        0 16px 48px rgba(0, 122, 255, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+        0 1px 0 rgba(255, 255, 255, 0.4) inset;
+}
+
+.tricklo-mini-answer:active {
+    transform: scale(1.02);
+}
+
+.tricklo-mini-answer.error {
+    background: rgba(255, 59, 48, 0.92);
+    border-color: rgba(255, 59, 48, 1);
+}
