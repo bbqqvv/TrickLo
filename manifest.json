@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "TrickLo - AI Assistant",
-    "version": "2.1.0",
-    "description": "Trợ lý AI thông minh - Quét nhiều câu hỏi trắc nghiệm và nhận đáp án nhanh chóng",
+    "version": "2.2.0",
+    "description": "Trợ lý AI thông minh - Quét câu hỏi từ màn hình và nhận đáp án nhanh chóng",
     "permissions": [
         "contextMenus",
         "storage",
@@ -10,7 +10,8 @@
         "scripting"
     ],
     "host_permissions": [
-        "https://generativelanguage.googleapis.com/*"
+        "https://generativelanguage.googleapis.com/*",
+        "https://unpkg.com/*"
     ],
     "background": {
         "service_worker": "background.js"
@@ -36,9 +37,28 @@
             "128": "icon128.png"
         }
     },
+    "commands": {
+        "screenshot-ocr": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+S",
+                "mac": "Command+Shift+S"
+            },
+            "description": "Chụp màn hình và quét câu hỏi"
+        }
+    },
     "icons": {
         "16": "icon16.png",
         "48": "icon48.png",
         "128": "icon128.png"
-    }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "screenshot-overlay.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
 }

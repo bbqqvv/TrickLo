@@ -247,7 +247,36 @@
         }
 
         .instructions li {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            margin-left: 0;
+            padding-left: 20px;
+            list-style: disc;
+        }
+
+        .instructions ul li {
+            margin-bottom: 4px;
+            color: rgba(0, 0, 0, 0.65);
+        }
+
+        .instructions kbd {
+            display: inline-block;
+            padding: 3px 8px;
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .instructions strong {
+            color: rgba(0, 122, 255, 0.9);
+            font-weight: 600;
         }
 
         .footer {
@@ -378,15 +407,23 @@
                 <ol>
                     <li>Lấy API key từ Google AI Studio</li>
                     <li>Dán API key và nhấn "Lưu cấu hình"</li>
-                    <li>Truy cập bất kỳ trang web nào</li>
-                    <li>Bôi đen văn bản hoặc câu hỏi</li>
-                    <li>Xem kết quả hiển thị ngay trên trang</li>
+                    <li><strong>Bôi đen text:</strong> Chọn văn bản hoặc câu hỏi</li>
+                    <li><strong>Chụp ẩn danh:</strong>
+                        <ul style="margin-top: 6px; font-size: 12px; line-height: 1.6;">
+                            <li>Nhấn <kbd>Ctrl+Shift+S</kbd> để bắt đầu</li>
+                            <li>Kéo chuột chọn vùng câu hỏi</li>
+                            <li>Nhấn <kbd>Ctrl+S</kbd> để lưu khung</li>
+                            <li>Nhấn <kbd>ESC</kbd> để ẩn/hiện khung</li>
+                            <li>Nhấn <kbd>S</kbd> để chụp và quét</li>
+                            <li>Không ai biết bạn đang chụp! 😎</li>
+                        </ul>
+                    </li>
                 </ol>
             </div>
         </div>
 
         <div class="footer">
-            TrickLo AI v2.1.0
+            TrickLo AI v2.2.0 • Screenshot OCR
         </div>
     </div>
 

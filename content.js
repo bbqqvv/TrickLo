@@ -190,6 +190,11 @@ document.addEventListener('mousedown', (e) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log("Content script received message:", request);
 
+    if (request.action === "startScreenshotCrop") {
+        startScreenshotCropMode();
+        return true;
+    }
+
     if (request.action === "showLoading") {
         hideFloatingMenu();
         showBubble(request.question, "⏳ Đang xử lý...", true);
@@ -1090,5 +1095,443 @@ function formatAnswer(text) {
     formatted = formatted.replace(/\n/g, '<br>');
 
     return formatted;
+}
+
+// ========================================
+// SCREENSHOT OCR FUNCTIONALITY
+// ========================================
+
+let screenshotOverlay = null;
+let selectionBox = null;
+let captureButton = null;
+let savedRegion = null; // Lưu vùng đã setup
+let startX = 0, startY = 0;
+let isDrawing = false;
+let isSetupMode = false; // true = đang setup, false = đã setup xong
+
+// Bắt đầu chế độ crop screenshot
+function startScreenshotCropMode() {
+    // Nếu đã có vùng setup, chỉ cần chụp lại
+    if (savedRegion && !isSetupMode) {
+        captureRegion();
+        return;
+    }
+
+    // Nếu chưa setup hoặc đang ở setup mode
+    isSetupMode = true;
+    // Tạo overlay toàn màn hình
+    screenshotOverlay = document.createElement('div');
+    screenshotOverlay.id = 'tricklo-screenshot-overlay';
+    screenshotOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        cursor: crosshair;
+        z-index: 2147483647;
+    `;
+
+    // Tạo hướng dẫn
+    const instruction = document.createElement('div');
+    instruction.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(120px);
+        -webkit-backdrop-filter: blur(120px);
+        color: rgba(0, 0, 0, 0.88);
+        padding: 16px 24px;
+        border-radius: 16px;
+        font-size: 15px;
+        font-weight: 600;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+        z-index: 2147483648;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    `;
+    instruction.id = 'tricklo-instruction';
+    instruction.innerHTML = savedRegion ?
+        '📸 Kéo chuột để chỉnh lại vùng • <strong>ESC</strong> để hủy' :
+        '📸 Kéo chuột để chọn vùng câu hỏi • <strong>ESC</strong> để hủy';
+
+    // Tạo selection box
+    selectionBox = document.createElement('div');
+    selectionBox.style.cssText = `
+        position: fixed;
+        border: 2px solid rgba(0, 122, 255, 0.9);
+        background: rgba(0, 122, 255, 0.1);
+        display: none;
+        z-index: 2147483648;
+        box-shadow: 
+            0 0 0 2px rgba(255, 255, 255, 0.5),
+            0 8px 24px rgba(0, 122, 255, 0.3);
+    `;
+
+    document.body.appendChild(screenshotOverlay);
+    document.body.appendChild(instruction);
+    document.body.appendChild(selectionBox);
+
+    // Event listeners
+    screenshotOverlay.addEventListener('mousedown', handleMouseDown);
+    screenshotOverlay.addEventListener('mousemove', handleMouseMove);
+    screenshotOverlay.addEventListener('mouseup', handleMouseUp);
+
+    // ESC để hủy
+    document.addEventListener('keydown', handleEscapeKey);
+}
+
+function handleMouseDown(e) {
+    isDrawing = true;
+    startX = e.clientX;
+    startY = e.clientY;
+
+    selectionBox.style.left = startX + 'px';
+    selectionBox.style.top = startY + 'px';
+    selectionBox.style.width = '0px';
+    selectionBox.style.height = '0px';
+    selectionBox.style.display = 'block';
+}
+
+function handleMouseMove(e) {
+    if (!isDrawing) return;
+
+    const currentX = e.clientX;
+    const currentY = e.clientY;
+
+    const width = currentX - startX;
+    const height = currentY - startY;
+
+    if (width < 0) {
+        selectionBox.style.left = currentX + 'px';
+        selectionBox.style.width = Math.abs(width) + 'px';
+    } else {
+        selectionBox.style.width = width + 'px';
+    }
+
+    if (height < 0) {
+        selectionBox.style.top = currentY + 'px';
+        selectionBox.style.height = Math.abs(height) + 'px';
+    } else {
+        selectionBox.style.height = height + 'px';
+    }
+}
+
+async function handleMouseUp(e) {
+    if (!isDrawing) return;
+    isDrawing = false;
+
+    const rect = selectionBox.getBoundingClientRect();
+
+    // Kiểm tra kích thước tối thiểu
+    if (rect.width < 50 || rect.height < 50) {
+        cleanupScreenshotMode();
+        alert('Vùng chọn quá nhỏ. Vui lòng chọn vùng lớn hơn.');
+        return;
+    }
+
+    // Lưu vùng tạm thời (chưa confirm)
+    savedRegion = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+    };
+
+    // Cập nhật hướng dẫn
+    updateInstruction('✅ Nhấn <strong>Ctrl+S</strong> để lưu khung • <strong>ESC</strong> để hủy');
+}
+
+function handleEscapeKey(e) {
+    // Nếu đang setup mode
+    if (isSetupMode) {
+        if (e.key === 'Escape') {
+            cleanupScreenshotMode();
+        }
+
+        // Ctrl+S để confirm và lưu khung
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            if (savedRegion) {
+                confirmRegion();
+            }
+        }
+    }
+}
+
+function cleanupScreenshotMode() {
+    if (screenshotOverlay) {
+        screenshotOverlay.remove();
+        screenshotOverlay = null;
+    }
+    if (selectionBox && isSetupMode) {
+        selectionBox.remove();
+        selectionBox = null;
+    }
+    const instruction = document.getElementById('tricklo-instruction');
+    if (instruction) {
+        instruction.remove();
+    }
+    document.removeEventListener('keydown', handleEscapeKey);
+    document.removeEventListener('keydown', handleGlobalKeys, true);
+    isDrawing = false;
+    isSetupMode = false;
+}
+
+// Update instruction text
+function updateInstruction(text) {
+    const instruction = document.getElementById('tricklo-instruction');
+    if (instruction) {
+        instruction.innerHTML = text;
+    }
+}
+
+// Confirm region và setup controls
+function confirmRegion() {
+    if (!savedRegion) return;
+
+    // Cleanup overlay và instruction
+    if (screenshotOverlay) {
+        screenshotOverlay.remove();
+        screenshotOverlay = null;
+    }
+    const instruction = document.getElementById('tricklo-instruction');
+    if (instruction) {
+        instruction.remove();
+    }
+
+    document.removeEventListener('keydown', handleEscapeKey);
+    isSetupMode = false;
+
+    // Setup khung và controls ẩn
+    setupHiddenCaptureMode();
+}
+
+// Setup hidden capture mode với phím tắt
+function setupHiddenCaptureMode() {
+    console.log("🔧 Setting up hidden capture mode");
+    console.log("📍 Saved region:", savedRegion);
+
+    // Tạo selection box ẩn
+    if (!selectionBox) {
+        selectionBox = document.createElement('div');
+    }
+
+    selectionBox.style.cssText = `
+        position: fixed;
+        left: ${savedRegion.left}px;
+        top: ${savedRegion.top}px;
+        width: ${savedRegion.width}px;
+        height: ${savedRegion.height}px;
+        border: 2px dashed rgba(0, 122, 255, 0.6);
+        background: rgba(0, 122, 255, 0.05);
+        z-index: 2147483640;
+        pointer-events: none;
+        display: none;
+        box-shadow: 
+            0 0 0 2px rgba(255, 255, 255, 0.3),
+            0 4px 12px rgba(0, 122, 255, 0.2);
+        transition: opacity 0.3s ease;
+    `;
+
+    if (!document.body.contains(selectionBox)) {
+        document.body.appendChild(selectionBox);
+        console.log("✅ Selection box added to DOM");
+    }
+
+    // Remove old listener first to prevent duplicates
+    document.removeEventListener('keydown', handleGlobalKeys, true);
+
+    // Listen to global keys with capture phase để ưu tiên
+    document.addEventListener('keydown', handleGlobalKeys, true);
+    console.log("✅ Global key listener registered (capture phase)");
+
+    // Show notification
+    showNotification('✅ Đã lưu khung! Nhấn <strong>ESC</strong> để hiện khung, <strong>S</strong> để chụp');
+}
+
+// Show notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(52, 199, 89, 0.95);
+        backdrop-filter: blur(120px);
+        -webkit-backdrop-filter: blur(120px);
+        color: white;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(52, 199, 89, 0.4);
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+        animation: slideInRight 0.3s ease;
+    `;
+    notification.innerHTML = message;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Handle global keys (ESC, S)
+function handleGlobalKeys(e) {
+    console.log("⌨️ Key pressed:", e.key, "Code:", e.code, "Target:", e.target.tagName);
+
+    // ESC để toggle hiện/ẩn khung
+    if (e.key === 'Escape') {
+        console.log("👁️ Toggling box visibility");
+        toggleBoxVisibility();
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // S để chụp
+    if (e.key === 's' || e.key === 'S') {
+        console.log("📸 S key detected");
+        // Không chụp nếu đang typing trong input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+            console.log("⚠️ Ignoring S key - in input field");
+            return;
+        }
+        console.log("✅ Capturing region...");
+        e.preventDefault();
+        e.stopPropagation();
+        captureRegion();
+    }
+}
+
+// Chụp vùng đã setup
+async function captureRegion() {
+    console.log("📸 captureRegion called");
+    console.log("Saved region:", savedRegion);
+
+    if (!savedRegion) {
+        console.error("❌ No saved region found!");
+        alert('⚠️ Chưa có vùng được lưu. Vui lòng setup lại bằng Ctrl+Shift+S');
+        return;
+    }
+
+    try {
+        console.log("🔄 Starting screenshot capture...");
+        await captureAndCropScreenshot(savedRegion);
+    } catch (error) {
+        console.error('❌ Error capturing region:', error);
+        alert('Lỗi khi chụp: ' + error.message);
+    }
+}
+
+// Toggle hiện/ẩn khung
+function toggleBoxVisibility() {
+    console.log("👁️ toggleBoxVisibility called");
+    console.log("Selection box exists:", !!selectionBox);
+
+    if (!selectionBox) {
+        console.error("❌ No selection box found!");
+        return;
+    }
+
+    const isHidden = selectionBox.style.display === 'none';
+    console.log("Current state - hidden:", isHidden);
+
+    if (isHidden) {
+        selectionBox.style.display = 'block';
+        showNotification('👁️ Đã hiện khung');
+    } else {
+        selectionBox.style.display = 'none';
+        showNotification('🔒 Đã ẩn khung - Nhấn <strong>S</strong> để chụp');
+    }
+}
+
+// Reset vùng chọn
+function resetRegion() {
+    closeControls();
+    savedRegion = null;
+    startScreenshotCropMode();
+}
+
+// Đóng controls
+function closeControls() {
+    if (selectionBox) {
+        selectionBox.remove();
+        selectionBox = null;
+    }
+    if (captureButton) {
+        captureButton.remove();
+        captureButton = null;
+    }
+    document.removeEventListener('keydown', handleGlobalKeys, true);
+    savedRegion = null;
+    showNotification('✕ Đã đóng chế độ chụp');
+}
+
+async function captureAndCropScreenshot(rect) {
+    console.log("🎬 captureAndCropScreenshot started");
+    console.log("📐 Capture rect:", rect);
+
+    // Ẩn tạm selection box khi chụp
+    const wasVisible = selectionBox && selectionBox.style.display !== 'none';
+    if (selectionBox) {
+        selectionBox.style.display = 'none';
+        console.log("👻 Selection box hidden");
+    }
+
+    // Hiển thị loading
+    console.log("⏳ Showing loading bubble...");
+    showBubble("Đang chụp màn hình...", "⏳ Đang phân tích...", true);
+
+    // Đợi một chút để UI update
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    try {
+        console.log("📸 Requesting screenshot from background...");
+
+        // Gửi request đến background để capture screenshot
+        chrome.runtime.sendMessage({
+            action: 'captureScreenshot',
+            rect: {
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height,
+                scrollX: window.scrollX,
+                scrollY: window.scrollY,
+                devicePixelRatio: window.devicePixelRatio
+            }
+        }, (response) => {
+            if (chrome.runtime.lastError) {
+                console.error("❌ Error sending capture request:", chrome.runtime.lastError);
+                showBubble("Lỗi", "❌ " + chrome.runtime.lastError.message, false);
+            } else {
+                console.log("✅ Capture request sent successfully");
+            }
+        });
+
+        // Khôi phục selection box về trạng thái cũ (vẫn ẩn nếu đã ẩn)
+        if (selectionBox && !wasVisible) {
+            selectionBox.style.display = 'none';
+            console.log("🔄 Selection box kept hidden");
+        }
+
+    } catch (error) {
+        console.error('❌ Error in captureAndCropScreenshot:', error);
+        showBubble("Lỗi", "❌ " + error.message, false);
+
+        // Khôi phục UI ngay cả khi lỗi
+        if (selectionBox && !wasVisible) {
+            selectionBox.style.display = 'none';
+        }
+
+        throw error;
+    }
 }
 
